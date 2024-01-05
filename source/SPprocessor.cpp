@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2023 suzumushi
+// Copyright (c) 2021-2024 suzumushi
 //
-// 2023-12-2		SPprocessor.cpp
+// 2024-1-4		SPprocessor.cpp
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -163,19 +163,15 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: process (Vst::ProcessData& data)
 				pinna_scattering_dRL.setup (dp.theta_p, gp.hrir);
 				pinna_scattering_dRR.setup (dp.theta_p, gp.hrir);
 				for (int i = 0; i < 6; i++) {
-					up_down_sampling_rLL [i].setup (dp.inv_cT, dp.v_distance_L [i]);
-					up_down_sampling_rLR [i].setup (dp.inv_cT, dp.v_distance_R [i]);
-					up_down_sampling_rRL [i].setup (dp.inv_cT, dp.v_distance_R [i]);
-					up_down_sampling_rRR [i].setup (dp.inv_cT, dp.v_distance_L [i]);
+					up_down_sampling_rLL [i].setup (dp.inv_cT, dp.v_distance_LL [i]);
+					up_down_sampling_rLR [i].setup (dp.inv_cT, dp.v_distance_LR [i]);
+					up_down_sampling_rRL [i].setup (dp.inv_cT, dp.v_distance_RL [i]);
+					up_down_sampling_rRR [i].setup (dp.inv_cT, dp.v_distance_RR [i]);
 					pinna_scattering_rLL [i].setup (dp.v_theta_p [i], gp.hrir);
 					pinna_scattering_rLR [i].setup (dp.v_theta_p [i], gp.hrir);
 					pinna_scattering_rRL [i].setup (dp.v_theta_p [i], gp.hrir);
 					pinna_scattering_rRR [i].setup (dp.v_theta_p [i], gp.hrir);
 				}
-				up_down_sampling_rRL [1].setup (dp.inv_cT, dp.v_distance_L [6]);
-				up_down_sampling_rRR [1].setup (dp.inv_cT, dp.v_distance_R [6]);
-				up_down_sampling_rRL [3].setup (dp.inv_cT, dp.v_distance_L [7]);
-				up_down_sampling_rRR [3].setup (dp.inv_cT, dp.v_distance_R [7]);
 				LPF_rLL.setup (gp.fc, processSetup.sampleRate);
 				LPF_rLR.setup (gp.fc, processSetup.sampleRate);
 				LPF_rRL.setup (gp.fc, processSetup.sampleRate);
@@ -204,75 +200,36 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: process (Vst::ProcessData& data)
 			dRL = pinna_scattering_dRL.process (dRL);
 			dRR = pinna_scattering_dRR.process (dRR);
 
-			double srLL = 0.0, srLR = 0.0;
+			double srLL = 0.0, srLR = 0.0, srRL = 0.0, srRR = 0.0;
 			for (int i = 0; i < 6; i++) {
-				double rLL, rLR;
+				double rLL, rLR, rRL, rRR;
 				if (data.inputs[0].silenceFlags == 0) {
-					rLL = up_down_sampling_rLL [i].process (*in_L, dp.v_decay [i]);
-					rLR = up_down_sampling_rLR [i].process (*in_L, dp.v_decay [i]);
+					rLL = up_down_sampling_rLL [i].process (*in_L, dp.v_decay_L [i]);
+					rLR = up_down_sampling_rLR [i].process (*in_L, dp.v_decay_L [i]);
+					rRL = up_down_sampling_rRL [i].process (*in_R, dp.v_decay_R [i]);
+					rRR = up_down_sampling_rRR [i].process (*in_R, dp.v_decay_R [i]);
 				} else {
-					rLL = up_down_sampling_rLL [i].process (0.0, dp.v_decay [i]);
-					rLR = up_down_sampling_rLR [i].process (0.0, dp.v_decay [i]);
+					rLL = up_down_sampling_rLL [i].process (0.0, dp.v_decay_L [i]);
+					rLR = up_down_sampling_rLR [i].process (0.0, dp.v_decay_L [i]);
+					rRL = up_down_sampling_rRL [i].process (0.0, dp.v_decay_R [i]);
+					rRR = up_down_sampling_rRR [i].process (0.0, dp.v_decay_R [i]);
 				}
-				rLL = sphere_scattering_rLL [i].process (rLL, dp.v_cos_theta_o [i]);
-				rLR = sphere_scattering_rLR [i].process (rLR, - dp.v_cos_theta_o [i]);
+				rLL = sphere_scattering_rLL [i].process (rLL, dp.v_cos_theta_o_L [i]);
+				rLR = sphere_scattering_rLR [i].process (rLR, - dp.v_cos_theta_o_L [i]);
+				rRL = sphere_scattering_rRL [i].process (rRL, dp.v_cos_theta_o_R [i]);
+				rRR = sphere_scattering_rRR [i].process (rRR, - dp.v_cos_theta_o_R [i]);
 				srLL += pinna_scattering_rLL [i].process (rLL);
 				srLR += pinna_scattering_rLR [i].process (rLR);
+				srRL += pinna_scattering_rRL [i].process (rRL);
+				srRR += pinna_scattering_rRR [i].process (rRR);
 			}
 			srLL = LPF_rLL.process (srLL);
 			srLR = LPF_rLR.process (srLR);
-
-			double rRL [6], rRR [6];
-			if (data.inputs[0].silenceFlags == 0) {
-				rRL [0] = up_down_sampling_rRL [0].process (*in_R, dp.v_decay [0]);
-				rRR [0] = up_down_sampling_rRR [0].process (*in_R, dp.v_decay [0]);
-				rRL [1] = up_down_sampling_rRL [1].process (*in_R, dp.v_decay [6]);
-				rRR [1] = up_down_sampling_rRR [1].process (*in_R, dp.v_decay [6]);
-				rRL [2] = up_down_sampling_rRL [2].process (*in_R, dp.v_decay [2]);
-				rRR [2] = up_down_sampling_rRR [2].process (*in_R, dp.v_decay [2]);
-				rRL [3] = up_down_sampling_rRL [3].process (*in_R, dp.v_decay [7]);
-				rRR [3] = up_down_sampling_rRR [3].process (*in_R, dp.v_decay [7]);
-				rRL [4] = up_down_sampling_rRL [4].process (*in_R, dp.v_decay [4]);
-				rRR [4] = up_down_sampling_rRR [4].process (*in_R, dp.v_decay [4]);
-				rRL [5] = up_down_sampling_rRL [5].process (*in_R, dp.v_decay [5]);
-				rRR [5] = up_down_sampling_rRR [5].process (*in_R, dp.v_decay [5]);
-			} else {
-				rRL [0] = up_down_sampling_rRL [0].process (0.0, dp.v_decay [0]);
-				rRR [0] = up_down_sampling_rRR [0].process (0.0, dp.v_decay [0]);
-				rRL [1] = up_down_sampling_rRL [1].process (0.0, dp.v_decay [6]);
-				rRR [1] = up_down_sampling_rRR [1].process (0.0, dp.v_decay [6]);
-				rRL [2] = up_down_sampling_rRL [2].process (0.0, dp.v_decay [2]);
-				rRR [2] = up_down_sampling_rRR [2].process (0.0, dp.v_decay [2]);
-				rRL [3] = up_down_sampling_rRL [3].process (0.0, dp.v_decay [7]);
-				rRR [3] = up_down_sampling_rRR [3].process (0.0, dp.v_decay [7]);
-				rRL [4] = up_down_sampling_rRL [4].process (0.0, dp.v_decay [4]);
-				rRR [4] = up_down_sampling_rRR [4].process (0.0, dp.v_decay [4]);
-				rRL [5] = up_down_sampling_rRL [5].process (0.0, dp.v_decay [5]);
-				rRR [5] = up_down_sampling_rRR [5].process (0.0, dp.v_decay [5]);
-			}
-			rRL [0] = sphere_scattering_rRL [0].process (rRL [0], - dp.v_cos_theta_o [0]);
-			rRR [0] = sphere_scattering_rRR [0].process (rRR [0], dp.v_cos_theta_o [0]);
-			rRL [1] = sphere_scattering_rRL [1].process (rRL [1], dp.v_cos_theta_o [6]);
-			rRR [1] = sphere_scattering_rRR [1].process (rRR [1], - dp.v_cos_theta_o [6]);
-			rRL [2] = sphere_scattering_rRL [2].process (rRL [2], - dp.v_cos_theta_o [2]);
-			rRR [2] = sphere_scattering_rRR [2].process (rRR [2], dp.v_cos_theta_o [2]);
-			rRL [3] = sphere_scattering_rRL [3].process (rRL [3], dp.v_cos_theta_o [7]);
-			rRR [3] = sphere_scattering_rRR [3].process (rRR [3], - dp.v_cos_theta_o [7]);
-			rRL [4] = sphere_scattering_rRL [4].process (rRL [4], - dp.v_cos_theta_o [4]);
-			rRR [4] = sphere_scattering_rRR [4].process (rRR [4], dp.v_cos_theta_o [4]);
-			rRL [5] = sphere_scattering_rRL [5].process (rRL [5], - dp.v_cos_theta_o [5]);
-			rRR [5] = sphere_scattering_rRR [5].process (rRR [5], dp.v_cos_theta_o [5]);
-
-			double srRL = 0.0, srRR = 0.0;
-			for (int i = 0; i < 6; i++) {
-				srRL += pinna_scattering_rRL [i].process (rRL [i]);
-				srRR += pinna_scattering_rRR [i].process (rRR [i]);
-			}
 			srRL = LPF_rRL.process (srRL);
 			srRR = LPF_rRR.process (srRR);
 
-			*out_L++ = dLL + srLL + dRL + srRL;
-			*out_R++ = dLR + srLR + dRR + srRR;
+			*out_L++ = (dLL + srLL + dRL + srRL) / 2.0;
+			*out_R++ = (dLR + srLR + dRR + srRR) / 2.0;
 			in_L++;
 			in_R++;
 			unprocessed_len--;

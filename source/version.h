@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2023 suzumushi
+// Copyright (c) 2021-2024 suzumushi
 //
-// 2023-11-29		version.h
+// 2024-1-4		version.h
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -22,5 +22,5 @@
 #define stringFileDescription	"SpeakerObjects VST3"
 #endif
 #define stringCompanyName		"suzumushi\0"
-#define stringLegalCopyright	"Copyright(c) 2021-2023 suzumushi."
+#define stringLegalCopyright	"Copyright(c) 2021-2024 suzumushi."
 #define stringLegalTrademarks	"VST is a trademark of Steinberg Media Technologies GmbH"
