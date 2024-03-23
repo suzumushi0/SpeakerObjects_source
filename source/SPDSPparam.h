@@ -1,7 +1,7 @@
 //
 // Copyright (c) 2021-2024 suzumushi
 //
-// 2024-1-4		SPDSPparam.h
+// 2024-3-23		SPDSPparam.h
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -11,14 +11,10 @@
 #pragma once
 
 #include "SOparam.h"
-#include "SOXYPad.h"
-
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 using namespace Steinberg;
 using namespace Vst;
 
-#include <valarray>
-using std::valarray;
 #ifdef _MSC_VER			// Visual C++
 #include <numbers>
 using std::numbers::pi;
@@ -45,15 +41,15 @@ public:
 	double decay_L {1.0};
 	double decay_R {1.0};
 	// real-time parameters for reflected waves
-	valarray <double> v_cos_theta_o_L {valarray <double> (0.0, 6)};
-	valarray <double> v_cos_theta_o_R {valarray <double> (0.0, 6)};
-	valarray <double> v_theta_p {valarray <double> (0.0, 6)};
-	valarray <double> v_distance_LL {valarray <double> (1.0, 8)};
-	valarray <double> v_distance_LR {valarray <double> (1.0, 8)};
-	valarray <double> v_distance_RL {valarray <double> (1.0, 6)};
-	valarray <double> v_distance_RR {valarray <double> (1.0, 6)};
-	valarray <double> v_decay_L {valarray <double> (1.0, 6)};
-	valarray <double> v_decay_R {valarray <double> (1.0, 6)};
+	double v_cos_theta_o_L [6];
+	double v_cos_theta_o_R [6];
+	double v_theta_p [6];
+	double v_distance_LL [6];
+	double v_distance_LR [6];
+	double v_distance_RL [6];
+	double v_distance_RR [6];
+	double v_decay_L [6];
+	double v_decay_R [6];
 	// real-time parameter for crosstalk canceller
 	double sin_phiL {1.0};
 
@@ -77,10 +73,10 @@ private:
 	double delta_cos_theta_o {0.0};
 	double delta_decay_L {1.0};
 	double delta_decay_R {1.0};
-	valarray <double> v_delta_cos_theta_o_L {valarray <double> (0.0, 6)};
-	valarray <double> v_delta_cos_theta_o_R {valarray <double> (0.0, 6)};
-	valarray <double> v_delta_decay_L {valarray <double> (1.0, 6)};
-	valarray <double> v_delta_decay_R {valarray <double> (1.0, 6)};
+	double v_delta_cos_theta_o_L [6];
+	double v_delta_cos_theta_o_R [6];
+	double v_delta_decay_L [6];
+	double v_delta_decay_R [6];
 };
 
 } // namespace suzumushi

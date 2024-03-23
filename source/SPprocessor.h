@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2023 suzumushi
+// Copyright (c) 2021-2024 suzumushi
 //
-// 2023-12-1		SPprocessor.h
+// 2024-3-23		SPprocessor.h
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -13,14 +13,13 @@
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 // suzumushi: 
-#include "SOconfig.h"
 #include "SOparam.h"
 #include "SPDSPparam.h"
 #include "SOudsampling.h"
 #include "SO2ndordIIRfilters.h"
 #include "SOpinna.h"
 #include "SOLPF.h"
-#include "SOextparam.h"
+
 
 namespace suzumushi {
 

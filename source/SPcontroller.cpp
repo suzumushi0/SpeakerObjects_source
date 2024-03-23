@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2023 suzumushi
+// Copyright (c) 2021-2024 suzumushi
 //
-// 2023-11-30		SPcontroller.cpp
+// 2024-3-23		SPcontroller.cpp
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -9,7 +9,8 @@
 //
 
 #include "SPcontroller.h"
-#include "SPcids.h"
+#include "SOparam.h"
+#include "SOvst3editor.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 
 // suzumushi:
