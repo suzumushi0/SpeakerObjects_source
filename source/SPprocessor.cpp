@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2024 suzumushi
+// Copyright (c) 2021-2025 suzumushi
 //
-// 2024-3-23		SPprocessor.cpp
+// 2025-3-20		SPprocessor.cpp
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -136,17 +136,18 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: process (Vst::ProcessData& data)
 
 	if (gp.bypass) {
 		// bypass mode
-		for (int32 i = 0; i < data.numSamples; i++) {
-			if (data.inputs[0].silenceFlags == 0) {
-				// all silenceFlags are false
+		if (data.inputs[0].silenceFlags == 0)
+			// all silenceFlags are false
+			for (int32 i = 0; i < data.numSamples; i++) {
 				*out_L++ = *in_L++;
 				*out_R++ = *in_R++;
-			} else {
-				// some silenceFlags are true
+			}
+		else
+			// some silenceFlags are true
+			for (int32 i = 0; i < data.numSamples; i++) {
 				*out_L++ = *out_R++ = 0.0;
 				data.outputs[0].silenceFlags = data.inputs[0].silenceFlags;
 			}
-		}
 	} else {
 		// DSP mode
 		for (int32 i = 0; i < data.numSamples; i++) {				
