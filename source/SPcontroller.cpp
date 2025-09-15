@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2024 suzumushi
+// Copyright (c) 2021-2025 suzumushi
 //
-// 2024-3-23		SPcontroller.cpp
+// 2025-9-14		SPcontroller.cpp
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -174,6 +174,8 @@ tresult PLUGIN_API SpeakerObjectsController:: initialize (FUnknown* context)
 	hrir_param -> appendString (STR16 ("Univ. of York, SADIE II KU 100"));
 	hrir_param -> appendString (STR16 ("Univ. of York, SADIE II KEMAR"));
 	hrir_param -> appendString (STR16 ("Aachen Univ., High-resolution KEMAR"));
+	hrir_param -> appendString (STR16 ("Machine learning generated HRIR 1"));
+	hrir_param -> appendString (STR16 ("Machine learning generated HRIR 2"));
 	parameters.addParameter (hrir_param);
 
 	// bypass: bypass flag

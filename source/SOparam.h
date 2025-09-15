@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2023 suzumushi
+// Copyright (c) 2021-2025 suzumushi
 //
-// 2023-12-3		SOparam.h
+// 2025-8-28		SOparam.h
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -59,7 +59,7 @@ constexpr struct rangeParameter s_x = {
 	S_X,								// tag
 	{- max_side_len / 2.0},				// min
 	{max_side_len / 2.0},				// max
-	{5.19},								// default
+	{1.0},								// default
 	{0},								// continuous
 	{ParameterInfo::kCanAutomate}		// flags
 };
@@ -69,7 +69,7 @@ constexpr struct rangeParameter s_y = {
 	S_Y,								// tag
 	{- max_side_len / 2.0},				// min
 	{max_side_len / 2.0},				// max
-	{3.0},								// default
+	{0.0},								// default
 	{0},								// continuous
 	{ParameterInfo::kCanAutomate}		// flags
 };
@@ -79,7 +79,7 @@ constexpr struct rangeParameter s_z = {
 	S_Z,								// tag
 	{- max_side_len / 2.0},				// min
 	{max_side_len / 2.0},				// max
-	{-0.36},							// default
+	{0.0},								// default
 	{0},								// continuous
 	{ParameterInfo::kCanAutomate}		// flags
 };
@@ -169,7 +169,7 @@ constexpr struct rangeParameter d_att = {
 	D_ATT,								// tag
 	{-6.0},								// min
 	{0.0},								// max
-	{-1.5},								// default
+	{-6.0},								// default
 	{0},								// continuous
 	{ParameterInfo::kCanAutomate}		// flags
 };
@@ -200,7 +200,7 @@ constexpr struct rangeParameter r_x = {
 	R_X,								// tag
 	{min_dist * 2.0},					// min
 	{max_side_len},						// max
-	{17.0},								// default
+	{2.9},								// default
 	{0},								// continuous
 	{ParameterInfo::kNoFlags}			// flags
 };
@@ -210,7 +210,7 @@ constexpr struct rangeParameter r_y = {
 	R_Y,								// tag
 	{min_dist * 2.0},					// min
 	{max_side_len},						// max
-	{11.0},								// default
+	{4.1},								// default
 	{0},								// continuous
 	{ParameterInfo::kNoFlags}			// flags
 };
@@ -220,7 +220,7 @@ constexpr struct rangeParameter r_z = {
 	R_Z,								// tag
 	{min_dist * 2.0},					// min
 	{max_side_len},						// max
-	{7.0},								// default
+	{2.3},								// default
 	{0},								// continuous
 	{ParameterInfo::kNoFlags}			// flags
 };
@@ -230,7 +230,7 @@ constexpr struct rangeParameter c_x = {
 	C_X,								// tag
 	{min_dist},							// min
 	{max_side_len / 2.0},				// max
-	{7.0},								// default
+	{1.8},								// default
 	{0},								// continuous
 	{ParameterInfo::kNoFlags}			// flags
 };
@@ -240,7 +240,7 @@ constexpr struct rangeParameter c_y = {
 	C_Y,								// tag
 	{min_dist},							// min
 	{max_side_len / 2.0},				// max
-	{6.0},								// default
+	{2.2},								// default
 	{0},								// continuous
 	{ParameterInfo::kNoFlags}			// flags
 };
@@ -250,7 +250,7 @@ constexpr struct rangeParameter c_z = {
 	C_Z,								// tag
 	{min_dist},							// min
 	{max_side_len / 2.0},				// max
-	{1.6},								// default
+	{0.8},								// default
 	{0},								// continuous
 	{ParameterInfo::kNoFlags}			// flags
 };
@@ -264,6 +264,8 @@ enum class HRIR_L {
 	YORK_KU100,
 	YORK_KEMAR,
 	AACHEN_KEMAR,
+	ML_HRIR_1,
+	ML_HRIR_2,
 	LIST_LEN
 };
 
