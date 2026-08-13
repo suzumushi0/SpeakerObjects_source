@@ -22,7 +22,7 @@ project(SpeakerObjects
 	# This is your plug-in version number. Change it here only.
 	# Version number symbols usable in C++ can be found in
 	# source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
-	VERSION 2.1.1.0 
+	VERSION 2.2.0.0 
 	DESCRIPTION "SpeakerObjects"
 )
 
@@ -96,7 +96,13 @@ if(SMTG_ENABLE_VSTGUI_SUPPORT)
 	)
 	smtg_target_add_plugin_resources(SpeakerObjects
 		RESOURCES
-			"resource/SpeakerObjects.uidesc"
+			resource/SpeakerObjects.uidesc
+			resource/about.png
+			resource/handle.png
+			resource/line.png
+			resource/slider.png
+			resource/xypad.png
+			resource/yzpad.png
 	)
 endif(SMTG_ENABLE_VSTGUI_SUPPORT)
 # -------------------
