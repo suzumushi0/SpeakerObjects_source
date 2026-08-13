@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2021-2025 suzumushi
+// Copyright (c) 2021-2026 suzumushi
 //
-// 2025-3-20		SPprocessor.cpp
+// 2026-8-13		SPprocessor.cpp
 //
 // Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0).
 //
@@ -129,25 +129,41 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: process (Vst::ProcessData& data)
 		return kResultOk;
 	}
 
-	Vst::Sample32* in_L = data.inputs[0].channelBuffers32[0];
-	Vst::Sample32* in_R = data.inputs[0].channelBuffers32[1];
-	Vst::Sample32* out_L = data.outputs[0].channelBuffers32[0];
-	Vst::Sample32* out_R = data.outputs[0].channelBuffers32[1];
+	Vst::Sample32* in32_L = data.inputs [0].channelBuffers32 [0];
+	Vst::Sample32* in32_R = data.inputs [0].channelBuffers32 [1];
+	Vst::Sample32* out32_L = data.outputs [0].channelBuffers32 [0];
+	Vst::Sample32* out32_R = data.outputs [0].channelBuffers32 [1];
+	Vst::Sample64* in64_L = data.inputs [0].channelBuffers64 [0];
+	Vst::Sample64* in64_R = data.inputs [0].channelBuffers64 [1];
+	Vst::Sample64* out64_L = data.outputs [0].channelBuffers64 [0];
+	Vst::Sample64* out64_R = data.outputs [0].channelBuffers64 [1];
 
 	if (gp.bypass) {
 		// bypass mode
-		if (data.inputs[0].silenceFlags == 0)
+		if (data.inputs[0].silenceFlags == 0) {
 			// all silenceFlags are false
-			for (int32 i = 0; i < data.numSamples; i++) {
-				*out_L++ = *in_L++;
-				*out_R++ = *in_R++;
+			if (data.symbolicSampleSize == kSample32) {
+				for (int32 i = 0; i < data.numSamples; i++) {
+					*out32_L++ = *in32_L++;
+					*out32_R++ = *in32_R++;
+				}
+			} else {
+				for (int32 i = 0; i < data.numSamples; i++) {
+					*out64_L++ = *in64_L++;
+					*out64_R++ = *in64_R++;
+				}
 			}
-		else
+		} else {
 			// some silenceFlags are true
-			for (int32 i = 0; i < data.numSamples; i++) {
-				*out_L++ = *out_R++ = 0.0;
-				data.outputs[0].silenceFlags = data.inputs[0].silenceFlags;
+			data.outputs[0].silenceFlags = data.inputs[0].silenceFlags;
+			if (data.symbolicSampleSize == kSample32) {
+				for (int32 i = 0; i < data.numSamples; i++)
+					*out32_L++ = *out32_R++ = 0.0;
+			} else {
+				for (int32 i = 0; i < data.numSamples; i++)
+					*out64_L++ = *out64_R++ = 0.0;
 			}
+		}
 	} else {
 		// DSP mode
 		for (int32 i = 0; i < data.numSamples; i++) {				
@@ -181,10 +197,17 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: process (Vst::ProcessData& data)
 
 			double dLL, dLR, dRL, dRR;
 			if (data.inputs[0].silenceFlags == 0) {
-				dLL = up_down_sampling_dLL.process (*in_L, dp.decay_L);
-				dLR = up_down_sampling_dLR.process (*in_L, dp.decay_R);
-				dRL = up_down_sampling_dRL.process (*in_R, dp.decay_R);
-				dRR = up_down_sampling_dRR.process (*in_R, dp.decay_L);
+				if (data.symbolicSampleSize == kSample32) {
+					dLL = up_down_sampling_dLL.process (*in32_L, dp.decay_L);
+					dLR = up_down_sampling_dLR.process (*in32_L, dp.decay_R);
+					dRL = up_down_sampling_dRL.process (*in32_R, dp.decay_R);
+					dRR = up_down_sampling_dRR.process (*in32_R, dp.decay_L);
+				} else {
+					dLL = up_down_sampling_dLL.process (*in64_L, dp.decay_L);
+					dLR = up_down_sampling_dLR.process (*in64_L, dp.decay_R);
+					dRL = up_down_sampling_dRL.process (*in64_R, dp.decay_R);
+					dRR = up_down_sampling_dRR.process (*in64_R, dp.decay_L);
+				}
 			} else {
 				dLL = up_down_sampling_dLL.process (0.0, dp.decay_L);
 				dLR = up_down_sampling_dLR.process (0.0, dp.decay_R);
@@ -204,10 +227,17 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: process (Vst::ProcessData& data)
 			for (int i = 0; i < 6; i++) {
 				double rLL, rLR, rRL, rRR;
 				if (data.inputs[0].silenceFlags == 0) {
-					rLL = up_down_sampling_rLL [i].process (*in_L, dp.v_decay_L [i]);
-					rLR = up_down_sampling_rLR [i].process (*in_L, dp.v_decay_L [i]);
-					rRL = up_down_sampling_rRL [i].process (*in_R, dp.v_decay_R [i]);
-					rRR = up_down_sampling_rRR [i].process (*in_R, dp.v_decay_R [i]);
+					if (data.symbolicSampleSize == kSample32) {
+						rLL = up_down_sampling_rLL [i].process (*in32_L, dp.v_decay_L [i]);
+						rLR = up_down_sampling_rLR [i].process (*in32_L, dp.v_decay_L [i]);
+						rRL = up_down_sampling_rRL [i].process (*in32_R, dp.v_decay_R [i]);
+						rRR = up_down_sampling_rRR [i].process (*in32_R, dp.v_decay_R [i]);
+					} else {
+						rLL = up_down_sampling_rLL [i].process (*in64_L, dp.v_decay_L [i]);
+						rLR = up_down_sampling_rLR [i].process (*in64_L, dp.v_decay_L [i]);
+						rRL = up_down_sampling_rRL [i].process (*in64_R, dp.v_decay_R [i]);
+						rRR = up_down_sampling_rRR [i].process (*in64_R, dp.v_decay_R [i]);
+					}
 				} else {
 					rLL = up_down_sampling_rLL [i].process (0.0, dp.v_decay_L [i]);
 					rLR = up_down_sampling_rLR [i].process (0.0, dp.v_decay_L [i]);
@@ -228,10 +258,17 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: process (Vst::ProcessData& data)
 			srRL = LPF_rRL.process (srRL);
 			srRR = LPF_rRR.process (srRR);
 
-			*out_L++ = (dLL + srLL + dRL + srRL) / 2.0;
-			*out_R++ = (dLR + srLR + dRR + srRR) / 2.0;
-			in_L++;
-			in_R++;
+			if (data.symbolicSampleSize == kSample32) {
+				*out32_L++ = (dLL + srLL + dRL + srRL) / 2.0;
+				*out32_R++ = (dLR + srLR + dRR + srRR) / 2.0;
+				in32_L++;
+				in32_R++;
+			} else {
+				*out64_L++ = (dLL + srLL + dRL + srRL) / 2.0;
+				*out64_R++ = (dLR + srLR + dRR + srRR) / 2.0;
+				in64_L++;
+				in64_R++;
+			}
 			unprocessed_len--;
 		}
 	}
@@ -253,8 +290,8 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: canProcessSampleSize (int32 symboli
 		return kResultTrue;
 
 	// disable the following comment if your processing support kSample64
-	/* if (symbolicSampleSize == Vst::kSample64)
-		return kResultTrue; */
+	if (symbolicSampleSize == Vst::kSample64)
+		return kResultTrue;
 
 	return (kResultFalse);
 }
@@ -266,7 +303,7 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: setState (IBStream* state)
 	IBStreamer streamer (state, kLittleEndian);
 	
 	// suzumushi:
-	if (gp_load.param_changed == true)
+	if (set_param.load (std::memory_order_relaxed))
 		return (kResultFalse);
 
 	int version;
@@ -318,7 +355,7 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: setState (IBStream* state)
 	if (streamer.readInt32 (gp_load.bypass) == false)
 		return (kResultFalse);
 
-	gp_load.param_changed = true;
+	set_param.store (true, std::memory_order_release);
 
 	return (kResultOk);
 }
@@ -387,7 +424,7 @@ tresult PLUGIN_API SpeakerObjectsProcessor:: getState (IBStream* state)
 
 void SpeakerObjectsProcessor:: gui_param_loading ()
 {
-	if (gp_load.param_changed) {
+	if (set_param.load (std::memory_order_acquire)) {
 		gp.s_x = gp_load.s_x;
 		gp.s_y = gp_load.s_y;
 		gp.s_z = gp_load.s_z;
@@ -412,7 +449,7 @@ void SpeakerObjectsProcessor:: gui_param_loading ()
 
 		gp.bypass = gp_load.bypass;
 
-		gp_load.param_changed = false;
+		set_param.store (false, std::memory_order_relaxed);
 		reset ();
 	}
 }
