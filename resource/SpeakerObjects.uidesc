@@ -3,22 +3,22 @@
 		"version": "1",
 		"bitmaps": {
 			"about": {
-				"path": "D:\\VST\\SpeakerObjects\\resource\\about.png"
+				"path": "C:\\D\\Repos\\SpeakerObjects\\resource\\about.png"
 			},
 			"handle": {
-				"path": "D:\\VST\\SpeakerObjects\\resource\\handle.png"
+				"path": "C:\\D\\Repos\\SpeakerObjects\\resource\\handle.png"
 			},
 			"line": {
-				"path": "D:\\VST\\SpeakerObjects\\resource\\line.png"
+				"path": "C:\\D\\Repos\\SpeakerObjects\\resource\\line.png"
 			},
 			"slider": {
-				"path": "D:\\VST\\SpeakerObjects\\resource\\slider.png"
+				"path": "C:\\D\\Repos\\SpeakerObjects\\resource\\slider.png"
 			},
 			"xypad": {
-				"path": "D:\\VST\\SpeakerObjects\\resource\\xypad.png"
+				"path": "C:\\D\\Repos\\SpeakerObjects\\resource\\xypad.png"
 			},
 			"yzpad": {
-				"path": "D:\\VST\\SpeakerObjects\\resource\\yzpad.png"
+				"path": "C:\\D\\Repos\\SpeakerObjects\\resource\\yzpad.png"
 			}
 		},
 		"fonts": {
@@ -83,7 +83,7 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "D:\\VST\\SpeakerObjects\\build\\VST3\\Debug\\SpeakerObjects.vst3\\Contents\\Resources\\SpeakerObjects.uidesc"
+				"Path": "C:\\D\\Repos\\SpeakerObjects\\build\\VST3\\Debug\\SpeakerObjects.vst3\\Contents\\Resources\\SpeakerObjects.uidesc"
 			},
 			"UIGridController": {
 				"Grids": "1x 1,5x 5,10x 10,12x 12,15x 15",
@@ -1673,7 +1673,7 @@
 											"text-inset": "0, 0",
 											"text-rotation": "0",
 											"text-shadow-offset": "1, 1",
-											"title": "KHz",
+											"title": "kHz",
 											"transparent": "true",
 											"value-precision": "2",
 											"wants-focus": "false",
